@@ -1,0 +1,16 @@
+const colors = require('tailwindcss/colors');
+
+module.exports = {
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "./public/index.html",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        accent: colors.indigo,
+      },
+    },
+  },
+  plugins: [],
+};
