@@ -6,6 +6,7 @@ import { getJobs } from '../api/JobApis';
 import { getCountries } from '../api/CountryApis';
 import Toast from '../components/Toast';
 import StatCard from '../components/StatCard';
+import useBodyScrollLock from '../Utils/useBodyScrollLock';
 import { RefreshIcon, PlusIcon, SearchIcon, UsersIcon, EyeIcon, EditIcon, TrashIcon, WarningIcon } from '../Assets/icons';
 
 const BADGE_COLOR_PALETTES = [
@@ -92,6 +93,9 @@ export default function Employees() {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+
+  useBodyScrollLock(isFormModalOpen || isDetailsModalOpen || isDeleteModalOpen);
+
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',

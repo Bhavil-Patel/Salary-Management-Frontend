@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { getDepartments, getDepartmentById, addDepartment, updateDepartment, deleteDepartment, } from '../api/DepartmentApis';
 import Toast from '../components/Toast';
 import StatCard from '../components/StatCard';
+import useBodyScrollLock from '../Utils/useBodyScrollLock';
 import { RefreshIcon, PlusIcon, SearchIcon, EyeIcon, EditIcon, TrashIcon, WarningIcon } from '../Assets/icons';
 
 export default function Departments() {
@@ -17,6 +18,8 @@ export default function Departments() {
   const [formSubmitting, setFormSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
   const [toast, setToast] = useState(null);
+
+  useBodyScrollLock(isFormModalOpen || isDetailsModalOpen || isDeleteModalOpen);
 
   const debounceTimerRef = useRef(null);
   const handleSearchChange = (val) => {

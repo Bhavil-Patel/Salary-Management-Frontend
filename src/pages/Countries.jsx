@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { getCountries, getCountryById, addCountry, updateCountry, deleteCountry, } from '../api/CountryApis';
 import Toast from '../components/Toast';
 import StatCard from '../components/StatCard';
+import useBodyScrollLock from '../Utils/useBodyScrollLock';
 import { RefreshIcon, PlusIcon, SearchIcon, EyeIcon, EditIcon, TrashIcon, WarningIcon } from '../Assets/icons';
 
 export default function Countries() {
@@ -21,6 +22,8 @@ export default function Countries() {
     country_name: '',
     currency_code: '',
   });
+
+  useBodyScrollLock(isFormModalOpen || isDetailsModalOpen || isDeleteModalOpen);
 
   const debounceTimerRef = useRef(null);
   const handleSearchChange = (val) => {
