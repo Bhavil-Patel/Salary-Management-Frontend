@@ -1,25 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import Layout from './components/Layout.jsx';
+import Dashboard from './pages/Dashboard.jsx';
+import Employees from './pages/Employees.jsx';
+import Departments from './pages/Departments.jsx';
+import Jobs from './pages/Jobs.jsx';
+import Countries from './pages/Countries.jsx';
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route index element={<Navigate to="/dashboard" replace />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/employees" element={<Employees />} />
+        <Route path="/departments" element={<Departments />} />
+        <Route path="/jobs" element={<Jobs />} />
+        <Route path="/countries" element={<Countries />} />
+      </Route>
+    </Routes>
   );
 }
-
-export default App;
