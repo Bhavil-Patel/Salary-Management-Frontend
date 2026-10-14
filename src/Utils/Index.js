@@ -1,6 +1,9 @@
-export const formatMoney = (value, currency = 'USD') =>
-  new Intl.NumberFormat('en-US', {
+export const formatMoney = (value, currency = 'INR') => {
+  const code = currency || 'INR';
+  const locale = code === 'INR' ? 'en-IN' : 'en-US';
+  return new Intl.NumberFormat(locale, {
     style: 'currency',
-    currency,
+    currency: code,
     maximumFractionDigits: 0,
-  }).format(value);
+  }).format(Number(value) || 0);
+};

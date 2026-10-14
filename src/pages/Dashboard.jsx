@@ -90,6 +90,7 @@ export default function Dashboard() {
   const salarySpread = (Number(d.maxSalary) || 0) - (Number(d.minSalary) || 0);
   const maxBucketCount = Math.max(...buckets.map((bucket) => Number(bucket.count) || 0), 1);
   const totalCount = buckets.reduce((total, bucket) => total + (Number(bucket.count) || 0), 0);
+  const formatBucketRange = (range) => (range ? String(range).replace(/\$/g, '₹') : '');
 
   const handleSort = (field) => {
     if (sortField === field) {
@@ -561,7 +562,7 @@ export default function Dashboard() {
                           )
                         )}%`,
                       }}
-                      title={`${bucket.range}: ${count.toLocaleString()} employees (${percentage}%)`}
+                      title={`${formatBucketRange(bucket.range)}: ${count.toLocaleString()} employees (${percentage}%)`}
                     />
                   </div>
                 );
@@ -573,9 +574,9 @@ export default function Dashboard() {
                 <span
                   key={bucket.range}
                   className="flex-1 truncate text-center text-xs font-medium text-slate-600"
-                  title={bucket.range}
+                  title={formatBucketRange(bucket.range)}
                 >
-                  {bucket.range}
+                  {formatBucketRange(bucket.range)}
                 </span>
               ))}
             </div>

@@ -213,9 +213,9 @@ export default function Jobs() {
                   </td>
                 </tr>
               ) : (
-                jobs.map((job) => (
+                jobs.map((job, index) => (
                   <tr key={job.id} className="transition-colors hover:bg-slate-50/70">
-                    <td className="px-5 py-3.5 font-mono text-xs text-slate-500">#{job.id}</td>
+                    <td className="px-5 py-3.5 font-mono text-xs text-slate-500">#{index + 1}</td>
                     <td className="px-5 py-3.5">
                       <span className="font-semibold text-slate-900">{job.job_title}</span>
                     </td>

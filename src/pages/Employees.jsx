@@ -56,16 +56,16 @@ const getJobName = (jobData, fallbackTitle) => {
 
 const getCountryInfo = (countryData, fallbackCurrency) => {
   if (countryData && typeof countryData === 'object') {
-    const code = countryData.country_code || countryData.code || countryData.country?.country_code || '—';
-    const name = countryData.country_name || countryData.name || countryData.country?.country_name || 'N/A';
-    const currency = countryData.currency_code || countryData.currency || countryData.country?.currency_code || fallbackCurrency || 'USD';
-    const id = countryData.id || countryData.country?.id || 1;
+    const code = countryData.country_code || '—';
+    const name = countryData.country_name || 'N/A';
+    const currency = countryData.currency_code || 'INR';
+    const id = 1;
     return { code, name, currency, id };
   }
   return {
     code: typeof countryData === 'string' ? countryData : '—',
     name: typeof countryData === 'string' ? countryData : 'N/A',
-    currency: fallbackCurrency || 'USD',
+    currency: fallbackCurrency || 'INR',
     id: 1,
   };
 };
