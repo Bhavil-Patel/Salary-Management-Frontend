@@ -116,6 +116,22 @@ export default function Payroll() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
+  const isFilterActive =
+    searchQuery.trim() !== '' ||
+    selectedDept !== 'ALL' ||
+    selectedStatus !== 'ALL' ||
+    selectedMonth !== 10 ||
+    selectedYear !== 2026;
+
+  const handleClearFilters = () => {
+    setSearchQuery('');
+    setDebouncedSearch('');
+    setSelectedDept('ALL');
+    setSelectedStatus('ALL');
+    setSelectedMonth(10);
+    setSelectedYear(2026);
+  };
+
   // Fetch departments for filter
   useEffect(() => {
     const loadDepts = async () => {
@@ -424,6 +440,21 @@ export default function Payroll() {
               <option value="DRAFT">Draft</option>
             </select>
           </div>
+
+          {/* Clear Filters Button */}
+          {isFilterActive && (
+            <div className="self-end pb-0.5">
+              <button
+                type="button"
+                onClick={handleClearFilters}
+                className="inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-1.5 text-xs font-semibold text-rose-700 shadow-sm transition hover:bg-rose-100 hover:text-rose-800 focus:outline-none focus:ring-1 focus:ring-rose-400"
+                title="Reset all filters and search"
+              >
+                <CloseIcon className="h-3.5 w-3.5" />
+                Clear Filters
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Search */}
@@ -438,8 +469,21 @@ export default function Payroll() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Name or email address..."
-              className="w-full rounded-lg border border-slate-300 bg-white pl-8 pr-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 shadow-sm focus:border-accent-500 focus:outline-none focus:ring-1 focus:ring-accent-500"
+              className="w-full rounded-lg border border-slate-300 bg-white pl-8 pr-8 py-1.5 text-xs text-slate-800 placeholder-slate-400 shadow-sm focus:border-accent-500 focus:outline-none focus:ring-1 focus:ring-accent-500"
             />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery('');
+                  setDebouncedSearch('');
+                }}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 focus:outline-none"
+                title="Clear search"
+              >
+                <CloseIcon className="h-3.5 w-3.5" />
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -479,12 +523,32 @@ export default function Payroll() {
                   <td colSpan={8} className="py-12 text-center text-slate-500">
                     <div className="flex flex-col items-center justify-center">
                       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400 mb-2">
-                        📄
+                        {isFilterActive ? '🔍' : '📄'}
                       </div>
-                      <p className="font-semibold text-slate-700">No payroll records found for this period.</p>
-                      <p className="mt-1 text-xs text-slate-500">
-                        Click "Generate Monthly Payroll" to compute salaries for {getMonthName(selectedMonth)} {selectedYear}.
+                      <p className="font-semibold text-slate-800 text-sm">
+                        {searchQuery
+                          ? `No payroll records matching "${searchQuery}"`
+                          : isFilterActive
+                          ? 'No payroll records matching the selected filters.'
+                          : 'No payroll records found for this period.'}
                       </p>
+                      <p className="mt-1 text-xs text-slate-500 max-w-md">
+                        {isFilterActive
+                          ? 'Try adjusting your search query, department, or status filters.'
+                          : `Click "Generate Monthly Payroll" to compute salaries for ${getMonthName(selectedMonth)} ${selectedYear}.`}
+                      </p>
+                      {isFilterActive && (
+                        <div className="mt-4">
+                          <button
+                            type="button"
+                            onClick={handleClearFilters}
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-accent-500"
+                          >
+                            <CloseIcon className="h-3.5 w-3.5 text-slate-500" />
+                            Reset all filters
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -555,7 +619,7 @@ export default function Payroll() {
                               setActivePayslip(row);
                               setIsPayslipModalOpen(true);
                             }}
-                            title="View / Print Official Payslip"
+                            title="View / Download Official Payslip"
                             className="rounded p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition"
                           >
                             <EyeIcon className="h-4 w-4" />

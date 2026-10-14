@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { formatMoneyExact, getMonthName, numberToWords } from '../Utils/Index';
 import useBodyScrollLock from '../Utils/useBodyScrollLock';
 import { CloseIcon } from '../Assets/icons';
+import html2pdf from 'html2pdf.js';
 
 export default function PayslipModal({ payroll, isOpen, onClose }) {
-  // Prevent background scroll when modal is open
+  const [isDownloading, setIsDownloading] = useState(false);
   useBodyScrollLock(isOpen);
 
   if (!isOpen || !payroll) return null;
@@ -31,34 +33,60 @@ export default function PayslipModal({ payroll, isOpen, onClose }) {
 
   const isPaid = payroll.status === 'PAID';
 
-  const handlePrint = () => {
-    window.print();
+  const handleDownload = async () => {
+    const element = document.getElementById('printable-payslip');
+    if (!element) return;
+
+    setIsDownloading(true);
+    const cleanName = (emp.full_name || 'Employee').trim().replace(/[^a-zA-Z0-9_-]/g, '_');
+    const filename = `Salary_Slip_${cleanName}_${getMonthName(payroll.month)}_${payroll.year}.pdf`;
+
+    const opt = {
+      margin: [10, 10, 10, 10],
+      filename,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        scrollX: 0,
+        scrollY: 0,
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    };
+
+    try {
+      await html2pdf().set(opt).from(element).save();
+    } catch (err) {
+      console.error('Failed to download salary slip PDF', err);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   return (
     <div
-      className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 p-4 sm:p-6 backdrop-blur-sm !m-0 print:p-0 print:bg-white print:static"
+      className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 p-4 sm:p-6 backdrop-blur-sm !m-0"
       role="dialog"
       aria-modal="true"
       onClick={onClose}
     >
       <div className="flex min-h-full items-start justify-center py-6 sm:py-10">
         <div
-          className="relative w-full max-w-3xl rounded-xl bg-white shadow-2xl print:max-w-none print:shadow-none print:rounded-none"
+          className="relative w-full max-w-3xl rounded-xl bg-white shadow-2xl"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="top-0 z-20 flex items-center justify-between border-b border-slate-200 bg-white/95 px-6 py-4 backdrop-blur-md rounded-t-xl print:hidden">
+          <div className="top-0 z-20 flex items-center justify-between border-b border-slate-200 bg-white/95 px-6 py-4 backdrop-blur-md rounded-t-xl">
             <div className="flex items-center gap-2">
               <span className="inline-flex h-2.5 w-2.5 rounded-full bg-accent-600 animate-pulse" />
               <h3 className="text-base font-semibold text-slate-900">
                 Official Salary Slip
               </h3>
               <span
-                className={`ml-2 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                  isPaid
-                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                    : 'bg-amber-50 text-amber-700 border border-amber-200'
-                }`}
+                className={`ml-2 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${isPaid
+                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                  : 'bg-amber-50 text-amber-700 border border-amber-200'
+                  }`}
               >
                 {payroll.status || 'PROCESSED'}
               </span>
@@ -66,14 +94,27 @@ export default function PayslipModal({ payroll, isOpen, onClose }) {
 
             <div className="flex items-center gap-2">
               <button
-                onClick={handlePrint}
+                onClick={handleDownload}
+                disabled={isDownloading}
                 type="button"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-accent-500"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-accent-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:bg-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-500 disabled:opacity-60"
               >
-                <svg className="h-4 w-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                </svg>
-                Print / Save PDF
+                {isDownloading ? (
+                  <>
+                    <svg className="h-4 w-4 animate-spin text-white" viewBox="0 0 24 24" fill="none">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                    </svg>
+                    Downloading...
+                  </>
+                ) : (
+                  <>
+                    <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Download Salary Slip
+                  </>
+                )}
               </button>
               <button
                 onClick={onClose}
@@ -86,33 +127,31 @@ export default function PayslipModal({ payroll, isOpen, onClose }) {
             </div>
           </div>
 
-          <div id="printable-payslip" className="p-8 text-slate-900 print:p-8">
+          <div id="printable-payslip" className="p-8 text-slate-900 bg-white rounded-b-xl">
             {/* Header */}
-            <div className="flex flex-wrap items-start justify-between border-b-2 border-slate-800 pb-5">
-              <div>
-                <div className="flex items-center gap-2">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent-600 font-bold text-white shadow-sm">
-                    SM
-                  </div>
-                  <div>
-                    <h1 className="text-xl font-bold tracking-tight text-slate-900">
-                      Salary Management System
-                    </h1>
-                    <p className="text-xs text-slate-500">
-                      Enterprise Payroll & Compensation Portal
-                    </p>
-                  </div>
+            <div className="flex items-center justify-between border-b-2 border-slate-800 pb-6 mb-6">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-600 font-bold text-white shadow-sm text-base">
+                  SM
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-snug">
+                    Salary Management System
+                  </h1>
+                  <p className="text-xs text-slate-500 leading-normal mt-0.5">
+                    Enterprise Payroll & Compensation Portal
+                  </p>
                 </div>
               </div>
 
-              <div className="text-right">
-                <span className="inline-block rounded bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-slate-700">
+              <div className="text-right flex flex-col items-end">
+                <span className="inline-block rounded bg-slate-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-700 leading-none">
                   PAYSLIP
                 </span>
-                <p className="mt-1 text-sm font-semibold text-slate-900">
+                <p className="mt-1.5 text-sm font-bold text-slate-900 leading-snug">
                   {getMonthName(payroll.month)} {payroll.year}
                 </p>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-500 leading-normal mt-0.5 font-medium">
                   Slip Ref: #PAY-{payroll.id.toString().padStart(6, '0')}
                 </p>
               </div>
@@ -120,49 +159,53 @@ export default function PayslipModal({ payroll, isOpen, onClose }) {
 
             {/* Employee & Payment Metadata Grid */}
             <div className="mt-6 rounded-lg border border-slate-200 bg-slate-50/60 p-4">
-              <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs sm:grid-cols-4">
+              <div className="grid grid-cols-2 gap-x-6 gap-y-3.5 text-xs sm:grid-cols-4">
                 <div>
-                  <span className="text-slate-500">Employee ID:</span>
-                  <p className="font-semibold text-slate-800">EMP-#{emp.id || payroll.employee_id}</p>
+                  <span className="text-slate-500 block mb-0.5">Employee ID:</span>
+                  <p className="font-semibold text-slate-800 leading-normal">EMP-#{emp.id || payroll.employee_id}</p>
                 </div>
                 <div>
-                  <span className="text-slate-500">Employee Name:</span>
-                  <p className="font-semibold text-slate-800">{emp.full_name || 'N/A'}</p>
+                  <span className="text-slate-500 block mb-0.5">Employee Name:</span>
+                  <p className="font-semibold text-slate-800 leading-normal">{emp.full_name || 'N/A'}</p>
                 </div>
                 <div>
-                  <span className="text-slate-500">Designation:</span>
-                  <p className="font-semibold text-slate-800">{job}</p>
+                  <span className="text-slate-500 block mb-0.5">Designation:</span>
+                  <p className="font-semibold text-slate-800 leading-normal">{job}</p>
                 </div>
                 <div>
-                  <span className="text-slate-500">Department:</span>
-                  <p className="font-semibold text-slate-800">{dept}</p>
+                  <span className="text-slate-500 block mb-0.5">Department:</span>
+                  <p className="font-semibold text-slate-800 leading-normal">{dept}</p>
+                </div>
+
+                <div className="sm:col-span-2">
+                  <span className="text-slate-500 block mb-0.5">Email Address:</span>
+                  <p className="font-semibold text-slate-800 break-all leading-normal text-xs">{emp.email || 'N/A'}</p>
                 </div>
                 <div>
-                  <span className="text-slate-500">Email Address:</span>
-                  <p className="font-semibold text-slate-800 truncate" title={emp.email}>{emp.email || 'N/A'}</p>
+                  <span className="text-slate-500 block mb-0.5">Country & Currency:</span>
+                  <p className="font-semibold text-slate-800 leading-normal">{country} ({currency})</p>
                 </div>
                 <div>
-                  <span className="text-slate-500">Country & Currency:</span>
-                  <p className="font-semibold text-slate-800">{country} ({currency})</p>
-                </div>
-                <div>
-                  <span className="text-slate-500">Payment Status:</span>
-                  <p className={`font-semibold ${isPaid ? 'text-emerald-700' : 'text-amber-700'}`}>
+                  <span className="text-slate-500 block mb-0.5">Payment Status:</span>
+                  <p className={`font-semibold leading-normal ${isPaid ? 'text-emerald-700' : 'text-amber-700'}`}>
                     {payroll.status}
                   </p>
                 </div>
-                <div>
-                  <span className="text-slate-500">Payment Method:</span>
-                  <p className="font-semibold text-slate-800">
+
+                <div className="sm:col-span-2">
+                  <span className="text-slate-500 block mb-0.5">Payment Method:</span>
+                  <p className="font-semibold text-slate-800 leading-normal">
                     {payroll.payment_method?.replace(/_/g, ' ') || 'BANK TRANSFER'}
                   </p>
                 </div>
-                {payroll.payment_date && (
-                  <div className="col-span-2">
-                    <span className="text-slate-500">Payment Date:</span>
-                    <p className="font-semibold text-slate-800">{payroll.payment_date}</p>
-                  </div>
-                )}
+                <div className="sm:col-span-2">
+                  <span className="text-slate-500 block mb-0.5">
+                    {payroll.payment_date ? 'Payment Date:' : 'Slip Reference:'}
+                  </span>
+                  <p className="font-semibold text-slate-800 leading-normal">
+                    {payroll.payment_date || `#PAY-${payroll.id.toString().padStart(6, '0')}`}
+                  </p>
+                </div>
               </div>
             </div>
 

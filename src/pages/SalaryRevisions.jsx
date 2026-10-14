@@ -292,16 +292,46 @@ export default function SalaryRevisions() {
       </div>
 
       {/* Search Input */}
-      <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="relative w-full max-w-sm">
-          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Filter revisions by employee name..."
-            className="w-full rounded-lg border border-slate-300 bg-white pl-8 pr-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 shadow-sm focus:border-accent-500 focus:outline-none focus:ring-1 focus:ring-accent-500"
-          />
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="flex flex-wrap items-center gap-3 w-full max-w-md">
+          <div className="relative flex-1">
+            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Filter revisions by employee name..."
+              className="w-full rounded-lg border border-slate-300 bg-white pl-8 pr-8 py-1.5 text-xs text-slate-800 placeholder-slate-400 shadow-sm focus:border-accent-500 focus:outline-none focus:ring-1 focus:ring-accent-500"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery('');
+                  setDebouncedSearch('');
+                }}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 focus:outline-none"
+                title="Clear search"
+              >
+                <CloseIcon className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => {
+                setSearchQuery('');
+                setDebouncedSearch('');
+              }}
+              className="inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-1.5 text-xs font-semibold text-rose-700 shadow-sm transition hover:bg-rose-100 focus:outline-none focus:ring-1 focus:ring-rose-400"
+              title="Clear search filter"
+            >
+              <CloseIcon className="h-3.5 w-3.5" />
+              Clear Filter
+            </button>
+          )}
         </div>
 
         <span className="text-xs text-slate-500">
@@ -343,11 +373,32 @@ export default function SalaryRevisions() {
                 <tr>
                   <td colSpan={8} className="py-12 text-center text-slate-500">
                     <div className="flex flex-col items-center justify-center">
-                      <span className="text-3xl mb-2">📈</span>
-                      <p className="font-semibold text-slate-800">No salary revisions recorded yet.</p>
-                      <p className="mt-1 text-xs text-slate-500">
-                        Click "Record Salary Revision" above to apply appraisal increments to employees.
+                      <span className="text-3xl mb-2">{searchQuery ? '🔍' : '📈'}</span>
+                      <p className="font-semibold text-slate-800 text-sm">
+                        {searchQuery
+                          ? `No salary revisions matching "${searchQuery}"`
+                          : 'No salary revisions recorded yet.'}
                       </p>
+                      <p className="mt-1 text-xs text-slate-500 max-w-md">
+                        {searchQuery
+                          ? 'Try searching by a different employee name.'
+                          : 'Click "Record Salary Revision" above to apply appraisal increments to employees.'}
+                      </p>
+                      {searchQuery && (
+                        <div className="mt-4">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSearchQuery('');
+                              setDebouncedSearch('');
+                            }}
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-accent-500"
+                          >
+                            <CloseIcon className="h-3.5 w-3.5 text-slate-500" />
+                            Clear search filter
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </td>
                 </tr>

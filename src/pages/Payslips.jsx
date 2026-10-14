@@ -4,7 +4,7 @@ import { getPayrollList } from '../api/PayrollApis';
 import { getEmployees } from '../api/EmployeeApis';
 import PayslipModal from '../components/PayslipModal';
 import Toast from '../components/Toast';
-import { SearchIcon, EyeIcon, RefreshIcon } from '../Assets/icons';
+import { SearchIcon, EyeIcon, RefreshIcon, CloseIcon } from '../Assets/icons';
 
 export default function Payslips() {
   const [selectedMonth, setSelectedMonth] = useState(10);
@@ -32,6 +32,15 @@ export default function Payslips() {
     }, 400);
     return () => clearTimeout(timer);
   }, [searchQuery]);
+
+  const isFilterActive = searchQuery.trim() !== '' || selectedMonth !== 10 || selectedYear !== 2026;
+
+  const handleClearFilters = () => {
+    setSearchQuery('');
+    setDebouncedSearch('');
+    setSelectedMonth(10);
+    setSelectedYear(2026);
+  };
 
   const fetchPayslips = useCallback(async (page = 1) => {
     setLoading(true);
@@ -138,6 +147,20 @@ export default function Payslips() {
               ))}
             </select>
           </div>
+
+          {isFilterActive && (
+            <div className="self-end pb-0.5">
+              <button
+                type="button"
+                onClick={handleClearFilters}
+                className="inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-1.5 text-xs font-semibold text-rose-700 shadow-sm transition hover:bg-rose-100 hover:text-rose-800 focus:outline-none focus:ring-1 focus:ring-rose-400"
+                title="Reset month, year and search"
+              >
+                <CloseIcon className="h-3.5 w-3.5" />
+                Clear Filters
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Search Input */}
@@ -152,8 +175,21 @@ export default function Payslips() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by employee name or email..."
-              className="w-full rounded-lg border border-slate-300 bg-white pl-8 pr-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 shadow-sm focus:border-accent-500 focus:outline-none focus:ring-1 focus:ring-accent-500"
+              className="w-full rounded-lg border border-slate-300 bg-white pl-8 pr-8 py-1.5 text-xs text-slate-800 placeholder-slate-400 shadow-sm focus:border-accent-500 focus:outline-none focus:ring-1 focus:ring-accent-500"
             />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery('');
+                  setDebouncedSearch('');
+                }}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 focus:outline-none"
+                title="Clear search"
+              >
+                <CloseIcon className="h-3.5 w-3.5" />
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -170,13 +206,33 @@ export default function Payslips() {
           ))}
         </div>
       ) : payrolls.length === 0 ? (
-        <div className="rounded-xl border border-slate-200 bg-white p-12 text-center text-slate-500">
+        <div className="rounded-xl border border-slate-200 bg-white p-12 text-center text-slate-500 shadow-sm">
           <div className="flex flex-col items-center justify-center">
-            <span className="text-4xl mb-2">📄</span>
-            <p className="font-semibold text-slate-800">No payslips available for this period.</p>
-            <p className="mt-1 text-xs text-slate-500">
-              Generate the payroll first from the Payroll tab to create salary slips for {getMonthName(selectedMonth)} {selectedYear}.
+            <span className="text-4xl mb-2">{isFilterActive ? '🔍' : '📄'}</span>
+            <p className="font-semibold text-slate-800 text-sm">
+              {searchQuery
+                ? `No payslips matching "${searchQuery}"`
+                : isFilterActive
+                ? 'No payslips found for the selected period.'
+                : 'No payslips available for this period.'}
             </p>
+            <p className="mt-1 text-xs text-slate-500 max-w-md">
+              {isFilterActive
+                ? 'Try searching for another employee or clear active filters.'
+                : `Generate the payroll first from the Payroll tab to create salary slips for ${getMonthName(selectedMonth)} ${selectedYear}.`}
+            </p>
+            {isFilterActive && (
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={handleClearFilters}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-accent-500"
+                >
+                  <CloseIcon className="h-3.5 w-3.5 text-slate-500" />
+                  Clear filters & search
+                </button>
+              </div>
+            )}
           </div>
         </div>
       ) : (
@@ -243,7 +299,7 @@ export default function Payslips() {
                     className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-accent-50 hover:text-accent-700"
                   >
                     <EyeIcon className="h-3.5 w-3.5" />
-                    View & Print Official Slip
+                    View & Download Salary Slip
                   </button>
                 </div>
               </div>
