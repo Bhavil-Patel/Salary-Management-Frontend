@@ -124,10 +124,8 @@ export default function Departments() {
 
   return (
     <div className="space-y-6">
-      {/* Toast Alert */}
       <Toast toast={toast} onClose={() => setToast(null)} />
 
-      {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-3">
@@ -157,7 +155,6 @@ export default function Departments() {
         </div>
       </div>
 
-      {/* Summary Stats */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
         <StatCard label="Total Departments" value={departments.length} />
         <StatCard
@@ -167,7 +164,6 @@ export default function Departments() {
         <StatCard label="Database Table" value="departments" />
       </div>
 
-      {/* Search Bar */}
       <div className="rounded-lg border border-slate-200 bg-white p-4">
         <div className="relative max-w-md">
           <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -189,7 +185,6 @@ export default function Departments() {
         </div>
       </div>
 
-      {/* Main Table */}
       <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
@@ -263,7 +258,6 @@ export default function Departments() {
         </div>
       </div>
 
-      {/* MODAL: ADD / EDIT */}
       {isFormModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm !m-0">
           <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white shadow-2xl">
@@ -322,7 +316,6 @@ export default function Departments() {
         </div>
       )}
 
-      {/* MODAL: DETAILS */}
       {isDetailsModalOpen && selectedDept && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm !m-0">
           <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-6 shadow-2xl">
@@ -361,7 +354,6 @@ export default function Departments() {
         </div>
       )}
 
-      {/* MODAL: DELETE CONFIRMATION */}
       {isDeleteModalOpen && selectedDept && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm !m-0">
           <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-6 shadow-2xl">
