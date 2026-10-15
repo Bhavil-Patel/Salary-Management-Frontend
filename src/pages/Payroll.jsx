@@ -32,7 +32,6 @@ const PAYMENT_METHODS = [
 ];
 
 export default function Payroll() {
-  const currentDate = new Date();
   const [selectedMonth, setSelectedMonth] = useState(10);
   const [selectedYear, setSelectedYear] = useState(2026);
   const [selectedDept, setSelectedDept] = useState('ALL');

@@ -86,9 +86,3 @@ export const deleteSalaryRevision = async (id) => {
     handleApiError(error, 'Failed to delete salary revision.');
   }
 };
-
-export default {
-  getSalaryRevisions,
-  addSalaryRevision,
-  deleteSalaryRevision,
-};

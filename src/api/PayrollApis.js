@@ -149,14 +149,3 @@ export const deletePayroll = async (id) => {
     handleApiError(error, 'Failed to delete payroll record.');
   }
 };
-
-export default {
-  getPayrollList,
-  getPayrollById,
-  generateMonthlyPayroll,
-  createPayroll,
-  updatePayroll,
-  markPayrollPaid,
-  bulkMarkPaid,
-  deletePayroll,
-};

@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { formatMoneyExact, MONTHS, getMonthName } from '../Utils/Index';
 import { getPayrollList } from '../api/PayrollApis';
-import { getEmployees } from '../api/EmployeeApis';
 import PayslipModal from '../components/PayslipModal';
 import Toast from '../components/Toast';
 import { SearchIcon, EyeIcon, RefreshIcon, CloseIcon } from '../Assets/icons';
