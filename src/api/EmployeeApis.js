@@ -86,8 +86,8 @@ export const addEmployee = async (employeeData) => {
             data: {
                 full_name: employeeData.full_name,
                 email: employeeData.email,
-                job_title: employeeData.job_title,
-                department: employeeData.department,
+                job_id: Number(employeeData.job_id),
+                department_id: Number(employeeData.department_id),
                 country_id: Number(employeeData.country_id),
                 salary: Number(employeeData.salary),
                 hire_date: employeeData.hire_date,
@@ -121,15 +121,15 @@ export const updateEmployee = async (id, employeeData) => {
             data: {
                 full_name: employeeData.full_name,
                 email: employeeData.email,
-                job_title: employeeData.job_title,
-                department: employeeData.department,
+                job_id: Number(employeeData.job_id),
+                department_id: Number(employeeData.department_id),
                 country_id: Number(employeeData.country_id),
                 salary: Number(employeeData.salary),
                 hire_date: employeeData.hire_date,
             },
         };
 
-        const response = await apiConfig.post("/employees/update", payload);
+        const response = await apiConfig.put("/employees/update", payload);
 
         return response.data;
     } catch (error) {

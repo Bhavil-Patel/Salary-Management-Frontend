@@ -99,8 +99,8 @@ export default function Employees() {
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
-    job_title: '',
-    department: '',
+    job_id: '',
+    department_id: '',
     country_id: '',
     salary: '',
     hire_date: new Date().toISOString().split('T')[0],
@@ -198,8 +198,8 @@ export default function Employees() {
     setFormData({
       full_name: '',
       email: '',
-      job_title: jobList[0]?.job_title || '',
-      department: departmentList[0]?.department_name || '',
+      job_id: jobList[0]?.id || '',
+      department_id: departmentList[0]?.id || '',
       country_id: countryList[0]?.id || '',
       salary: '',
       hire_date: new Date().toISOString().split('T')[0],
@@ -210,16 +210,13 @@ export default function Employees() {
 
   const handleOpenEditModal = (emp) => {
     setSelectedEmployee(emp);
-    const countryInfo = getCountryInfo(emp.country, emp.currency);
-    const dept = getDeptName(emp.department);
-    const job = getJobName(emp.job, emp.job_title || emp.jobTitle);
 
     setFormData({
       full_name: emp.full_name || emp.name || '',
       email: emp.email || '',
-      job_title: job !== 'N/A' ? job : (jobList[0]?.job_title || ''),
-      department: dept !== 'General' ? dept : (departmentList[0]?.department_name || ''),
-      country_id: emp.country_id || countryInfo.id || (countryList[0]?.id || ''),
+      job_id: emp.job_id ?? emp.job?.id ?? jobList[0]?.id ?? '',
+      department_id: emp.department_id ?? emp.department?.id ?? departmentList[0]?.id ?? '',
+      country_id: emp.country_id ?? emp.country?.id ?? countryList[0]?.id ?? '',
       salary: emp.salary || '',
       hire_date: emp.hire_date || emp.hireDate || new Date().toISOString().split('T')[0],
     });
@@ -735,15 +732,15 @@ export default function Employees() {
                 <div>
                   <label className="block text-xs font-medium text-slate-700">Department</label>
                   <select
-                    value={formData.department}
-                    onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+                    value={formData.department_id}
+                    onChange={(e) => setFormData({ ...formData, department_id: e.target.value })}
                     className="mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm transition focus:border-accent-500 focus:outline-none focus:ring-1 focus:ring-accent-500"
                   >
-                    {!formData.department && <option value="">Select Department</option>}
+                    {!formData.department_id && <option value="">Select Department</option>}
                     {departmentList.map((dept) => {
                       const name = dept.department_name || dept;
                       return (
-                        <option key={dept.id || name} value={name}>
+                        <option key={dept.id || name} value={dept.id}>
                           {name}
                         </option>
                       );
@@ -754,15 +751,15 @@ export default function Employees() {
                 <div>
                   <label className="block text-xs font-medium text-slate-700">Job Title</label>
                   <select
-                    value={formData.job_title}
-                    onChange={(e) => setFormData({ ...formData, job_title: e.target.value })}
+                    value={formData.job_id}
+                    onChange={(e) => setFormData({ ...formData, job_id: e.target.value })}
                     className="mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm transition focus:border-accent-500 focus:outline-none focus:ring-1 focus:ring-accent-500"
                   >
-                    {!formData.job_title && <option value="">Select Job Title</option>}
+                    {!formData.job_id && <option value="">Select Job Title</option>}
                     {jobList.map((job) => {
                       const title = job.job_title || job;
                       return (
-                        <option key={job.id || title} value={title}>
+                        <option key={job.id || title} value={job.id}>
                           {title}
                         </option>
                       );
