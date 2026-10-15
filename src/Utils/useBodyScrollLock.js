@@ -14,8 +14,17 @@ export default function useBodyScrollLock(isLocked) {
     }
 
     return () => {
-      document.body.style.overflow = originalOverflow || '';
-      document.body.style.paddingRight = originalPaddingRight || '';
+      if (originalOverflow) {
+        document.body.style.overflow = originalOverflow;
+      } else {
+        document.body.style.removeProperty('overflow');
+      }
+
+      if (originalPaddingRight) {
+        document.body.style.paddingRight = originalPaddingRight;
+      } else {
+        document.body.style.removeProperty('padding-right');
+      }
     };
   }, [isLocked]);
 }
