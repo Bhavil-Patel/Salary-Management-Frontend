@@ -185,7 +185,7 @@ export default function Dashboard() {
         </button>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-5">
         {[
           {
             label: 'Total Headcount',
@@ -206,17 +206,18 @@ export default function Dashboard() {
           {
             label: 'Highest Salary',
             value: formatMoney(d.maxSalary || 0),
+            className: 'col-span-2 sm:col-span-1 lg:col-span-1',
           },
         ].map((card) => (
           <div
             key={card.label}
-            className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm"
+            className={`rounded-lg border border-slate-200 bg-white p-3.5 sm:p-4 shadow-sm ${card.className || ''}`}
           >
-            <p className="text-sm font-medium text-slate-500">
+            <p className="text-xs sm:text-sm font-medium text-slate-500">
               {card.label}
             </p>
 
-            <p className="mt-2 text-xl font-bold text-slate-900">
+            <p className="mt-1 sm:mt-2 text-lg sm:text-xl font-bold text-slate-900 truncate">
               {card.value}
             </p>
           </div>
@@ -330,8 +331,8 @@ export default function Dashboard() {
           </div>
         ) : (
           <>
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="relative w-full max-w-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="relative w-full sm:w-72 sm:max-w-xs">
                 <input
                   type="text"
                   value={searchTerm}
@@ -363,7 +364,7 @@ export default function Dashboard() {
             </div>
 
             <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
-              <table className="w-full text-left text-sm">
+              <table className="w-full min-w-[650px] text-left text-sm">
                 <thead className="border-b border-slate-200 bg-slate-50 text-slate-600">
                   <tr>
                     {[
@@ -381,6 +382,7 @@ export default function Dashboard() {
                         field: 'avg',
                         label: 'Average',
                         align: 'left',
+                        className: 'min-w-[180px] sm:min-w-[220px]',
                       },
                       {
                         field: 'median',
@@ -406,7 +408,7 @@ export default function Dashboard() {
                         className={`cursor-pointer select-none px-4 py-3 font-medium transition hover:text-slate-900 ${column.align === 'right'
                           ? 'text-right'
                           : ''
-                          }`}
+                          } ${column.className || ''}`}
                       >
                         <div
                           className={`flex items-center gap-1 ${column.align === 'right'
@@ -457,16 +459,16 @@ export default function Dashboard() {
                           </span>
                         </td>
 
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-2">
-                            <div className="h-2 flex-1 overflow-hidden rounded bg-slate-100">
+                        <td className="px-4 py-3 min-w-[180px] sm:min-w-[220px]">
+                          <div className="flex items-center gap-2.5 min-w-[170px] sm:min-w-[200px]">
+                            <div className="h-2 flex-1 min-w-[70px] sm:min-w-[100px] overflow-hidden rounded bg-slate-100">
                               <div
                                 className="h-2 rounded bg-accent-500 transition-all duration-300"
                                 style={{
                                   width: `${Math.min(
                                     100,
                                     Math.max(
-                                      4,
+                                      6,
                                       ((Number(row.avg) || 0) /
                                         maxAvg) *
                                       100
@@ -476,7 +478,7 @@ export default function Dashboard() {
                               />
                             </div>
 
-                            <span className="w-20 text-right font-medium tabular-nums text-slate-900">
+                            <span className="w-20 text-right font-medium tabular-nums text-slate-900 shrink-0">
                               {formatMoney(row.avg || 0)}
                             </span>
                           </div>
@@ -530,55 +532,59 @@ export default function Dashboard() {
               </span>
             </div>
 
-            <div
-              className="flex h-52 items-end gap-3"
-              role="img"
-              aria-label="Salary distribution by range"
-            >
-              {buckets.map((bucket) => {
-                const count = Number(bucket.count) || 0;
-                const percentage =
-                  totalCount > 0
-                    ? ((count / totalCount) * 100).toFixed(1)
-                    : '0.0';
-
-                return (
-                  <div
-                    key={bucket.range}
-                    className="group relative flex h-full flex-1 flex-col items-center justify-end gap-1.5"
-                  >
-                    <span className="text-xs font-medium tabular-nums text-slate-600 transition-colors group-hover:text-accent-600">
-                      {count.toLocaleString()}
-                    </span>
-
-                    <div
-                      className="w-full rounded-t bg-accent-500 shadow-sm transition-all duration-300 group-hover:bg-accent-600"
-                      style={{
-                        height: `${Math.max(
-                          6,
-                          Math.round(
-                            (count / maxBucketCount) *
-                            85
-                          )
-                        )}%`,
-                      }}
-                      title={`${formatBucketRange(bucket.range)}: ${count.toLocaleString()} employees (${percentage}%)`}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="mt-3 flex gap-3 border-t border-slate-100 pt-2.5">
-              {buckets.map((bucket) => (
-                <span
-                  key={bucket.range}
-                  className="flex-1 truncate text-center text-xs font-medium text-slate-600"
-                  title={formatBucketRange(bucket.range)}
+            <div className="overflow-x-auto pb-2">
+              <div className="min-w-[480px]">
+                <div
+                  className="flex h-52 items-end gap-3"
+                  role="img"
+                  aria-label="Salary distribution by range"
                 >
-                  {formatBucketRange(bucket.range)}
-                </span>
-              ))}
+                  {buckets.map((bucket) => {
+                    const count = Number(bucket.count) || 0;
+                    const percentage =
+                      totalCount > 0
+                        ? ((count / totalCount) * 100).toFixed(1)
+                        : '0.0';
+
+                    return (
+                      <div
+                        key={bucket.range}
+                        className="group relative flex h-full flex-1 flex-col items-center justify-end gap-1.5"
+                      >
+                        <span className="text-xs font-medium tabular-nums text-slate-600 transition-colors group-hover:text-accent-600">
+                          {count.toLocaleString()}
+                        </span>
+
+                        <div
+                          className="w-full rounded-t bg-accent-500 shadow-sm transition-all duration-300 group-hover:bg-accent-600"
+                          style={{
+                            height: `${Math.max(
+                              6,
+                              Math.round(
+                                (count / maxBucketCount) *
+                                85
+                              )
+                            )}%`,
+                          }}
+                          title={`${formatBucketRange(bucket.range)}: ${count.toLocaleString()} employees (${percentage}%)`}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-3 flex gap-3 border-t border-slate-100 pt-2.5">
+                  {buckets.map((bucket) => (
+                    <span
+                      key={bucket.range}
+                      className="flex-1 truncate text-center text-xs font-medium text-slate-600"
+                      title={formatBucketRange(bucket.range)}
+                    >
+                      {formatBucketRange(bucket.range)}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         )}

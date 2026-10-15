@@ -227,7 +227,6 @@ export default function SalaryRevisions() {
 
   return (
     <div className="space-y-6">
-      {/* Toast */}
       {toast && (
         <Toast
           message={toast.message}
@@ -236,18 +235,14 @@ export default function SalaryRevisions() {
         />
       )}
 
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">
             Salary Revisions & Appraisals
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
-            Log annual increments, promotions, and base salary modifications with historical audit logs.
-          </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => fetchRevisions(pagination.currentPage)}
             className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-accent-500"
@@ -277,13 +272,12 @@ export default function SalaryRevisions() {
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
         <StatCard label="Total Revisions Recorded" value={pagination.totalRecords} />
         <StatCard label="Average Increment" value={`+${avgIncrement}%`} />
         <StatCard label="Highest Increment" value={`+${maxIncrement}%`} />
-        <div className="rounded-lg border border-slate-200 bg-white p-4">
-          <p className="text-sm text-slate-500">Auto-Update Status</p>
+        <div className="rounded-lg border border-slate-200 bg-white p-3.5 sm:p-4 shadow-sm">
+          <p className="text-xs sm:text-sm text-slate-500">Auto-Update Status</p>
           <div className="mt-1 flex items-center gap-1.5 text-xs font-semibold text-emerald-700">
             <span className="h-2 w-2 rounded-full bg-emerald-500" />
             Live Sync with Employee CTC
@@ -291,10 +285,9 @@ export default function SalaryRevisions() {
         </div>
       </div>
 
-      {/* Search Input */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="flex flex-wrap items-center gap-3 w-full max-w-md">
-          <div className="relative flex-1">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-3.5 sm:p-4 shadow-sm">
+        <div className="flex flex-wrap items-center gap-3 w-full sm:max-w-md">
+          <div className="relative flex-1 w-full">
             <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
             <input
               type="text"
@@ -339,10 +332,9 @@ export default function SalaryRevisions() {
         </span>
       </div>
 
-      {/* Table */}
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full min-w-[800px] text-left text-xs">
             <thead className="border-b border-slate-200 bg-slate-50 font-semibold text-slate-700">
               <tr>
                 <th className="px-4 py-3.5">Employee</th>
@@ -471,7 +463,6 @@ export default function SalaryRevisions() {
           </table>
         </div>
 
-        {/* Pagination Bar */}
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-slate-50/50 px-4 py-3 text-xs text-slate-500">
           <div>
             Showing Page <strong>{pagination.currentPage}</strong> of <strong>{pagination.totalPages}</strong>
@@ -496,7 +487,6 @@ export default function SalaryRevisions() {
         </div>
       </div>
 
-      {/* --- MODAL: Record Salary Revision --- */}
       {isModalOpen && (
         <div
           className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 p-4 backdrop-blur-sm !m-0"
@@ -517,7 +507,6 @@ export default function SalaryRevisions() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4 p-6 text-xs">
-                {/* Employee Picker */}
                 <div>
                   <label className="block font-medium text-slate-700 mb-1">
                     1. Select Employee
@@ -584,7 +573,6 @@ export default function SalaryRevisions() {
                   )}
                 </div>
 
-                {/* Reactive Salary Calculation Fields */}
                 {selectedEmp && (
                   <div className="grid grid-cols-2 gap-3 rounded-lg border border-slate-200 bg-slate-50/50 p-3">
                     <div>
@@ -625,7 +613,6 @@ export default function SalaryRevisions() {
                   </div>
                 )}
 
-                {/* Effective Date & Revision Type */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block font-medium text-slate-700 mb-1">Effective Date</label>
@@ -652,7 +639,6 @@ export default function SalaryRevisions() {
                   </div>
                 </div>
 
-                {/* Remarks */}
                 <div>
                   <label className="block font-medium text-slate-700 mb-1">Remarks / Justification</label>
                   <textarea
@@ -686,7 +672,6 @@ export default function SalaryRevisions() {
         </div>
       )}
 
-      {/* --- CONFIRM DELETE MODAL --- */}
       {deletingId && (
         <div
           className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 p-4 backdrop-blur-sm !m-0"

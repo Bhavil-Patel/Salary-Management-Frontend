@@ -74,7 +74,6 @@ export default function Payslips() {
 
   return (
     <div className="space-y-6">
-      {/* Toast */}
       {toast && (
         <Toast
           message={toast.message}
@@ -83,7 +82,6 @@ export default function Payslips() {
         />
       )}
 
-      {/* Payslip Modal */}
       <PayslipModal
         payroll={activePayslip}
         isOpen={isModalOpen}
@@ -93,8 +91,7 @@ export default function Payslips() {
         }}
       />
 
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">
             Employee Payslips Directory
@@ -103,16 +100,15 @@ export default function Payslips() {
 
         <button
           onClick={() => fetchPayslips(pagination.currentPage)}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-accent-500"
+          className="inline-flex items-center gap-1.5 self-start sm:self-auto rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-accent-500"
         >
           <RefreshIcon className="h-4 w-4 text-slate-500" />
           Refresh
         </button>
       </div>
 
-      {/* Period & Search Filters */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 rounded-xl border border-slate-200 bg-white p-3.5 sm:p-4 shadow-sm">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
           <div>
             <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1">
               Select Pay Month
@@ -162,8 +158,7 @@ export default function Payslips() {
           )}
         </div>
 
-        {/* Search Input */}
-        <div className="relative w-full max-w-sm">
+        <div className="relative w-full sm:w-72">
           <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1">
             Search Employee
           </label>
@@ -193,7 +188,6 @@ export default function Payslips() {
         </div>
       </div>
 
-      {/* Payslip Cards Grid */}
       {loading ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[...Array(6)].map((_, i) => (
@@ -235,7 +229,7 @@ export default function Payslips() {
           </div>
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {payrolls.map((slip) => {
             const emp = slip.employee || {};
             const currency = emp.country?.currency_code || 'INR';
@@ -244,7 +238,7 @@ export default function Payslips() {
             return (
               <div
                 key={slip.id}
-                className="group relative flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-accent-300 hover:shadow-md"
+                className="group relative flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-sm transition hover:border-accent-300 hover:shadow-md"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2 border-b border-slate-100 pb-3">
@@ -270,7 +264,6 @@ export default function Payslips() {
                     </span>
                   </div>
 
-                  {/* Breakdown details */}
                   <div className="my-3 space-y-1.5 text-xs">
                     <div className="flex justify-between text-slate-600">
                       <span>Department:</span>
@@ -291,7 +284,6 @@ export default function Payslips() {
                   </div>
                 </div>
 
-                {/* Footer Action */}
                 <div className="mt-4 pt-3 border-t border-slate-100">
                   <button
                     onClick={() => openSlip(slip)}
@@ -307,7 +299,6 @@ export default function Payslips() {
         </div>
       )}
 
-      {/* Pagination */}
       {payrolls.length > 0 && (
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4 text-xs text-slate-500">
           <div>

@@ -272,7 +272,6 @@ export default function Payroll() {
 
   return (
     <div className="space-y-6">
-      {/* Toast */}
       {toast && (
         <Toast
           message={toast.message}
@@ -281,7 +280,6 @@ export default function Payroll() {
         />
       )}
 
-      {/* Payslip Modal */}
       <PayslipModal
         payroll={activePayslip}
         isOpen={isPayslipModalOpen}
@@ -291,15 +289,14 @@ export default function Payroll() {
         }}
       />
 
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">
             Payroll Management
           </h1>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => fetchPayroll(pagination.currentPage, true)}
             disabled={refreshing}
@@ -342,8 +339,7 @@ export default function Payroll() {
         </div>
       </div>
 
-      {/* Summary Stat Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
         <StatCard
           label={`Gross Payroll (${getMonthName(selectedMonth)} ${selectedYear})`}
           value={formatMoney(summary.totalGross)}
@@ -356,19 +352,17 @@ export default function Payroll() {
           label="Total Net Payable"
           value={formatMoney(summary.totalNet)}
         />
-        <div className="rounded-lg border border-slate-200 bg-white p-4">
-          <p className="text-sm text-slate-500">Disbursement Status</p>
+        <div className="rounded-lg border border-slate-200 bg-white p-3.5 sm:p-4 shadow-sm">
+          <p className="text-xs sm:text-sm text-slate-500">Disbursement Status</p>
           <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-2xl font-semibold text-emerald-700">{summary.paidCount} Paid</span>
+            <span className="text-xl sm:text-2xl font-semibold text-emerald-700">{summary.paidCount} Paid</span>
             <span className="text-xs text-slate-400">/ {summary.totalCount} Total</span>
           </div>
         </div>
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Month Selector */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 rounded-xl border border-slate-200 bg-white p-3.5 sm:p-4 shadow-sm">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 w-full lg:w-auto">
           <div>
             <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1">
               Month
@@ -386,7 +380,6 @@ export default function Payroll() {
             </select>
           </div>
 
-          {/* Year Selector */}
           <div>
             <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1">
               Year
@@ -404,7 +397,6 @@ export default function Payroll() {
             </select>
           </div>
 
-          {/* Department Filter */}
           <div>
             <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1">
               Department
@@ -423,7 +415,6 @@ export default function Payroll() {
             </select>
           </div>
 
-          {/* Status Filter */}
           <div>
             <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1">
               Status
@@ -440,7 +431,6 @@ export default function Payroll() {
             </select>
           </div>
 
-          {/* Clear Filters Button */}
           {isFilterActive && (
             <div className="self-end pb-0.5">
               <button
@@ -456,8 +446,7 @@ export default function Payroll() {
           )}
         </div>
 
-        {/* Search */}
-        <div className="relative w-full max-w-xs">
+        <div className="relative w-full lg:w-72">
           <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1">
             Search Employee
           </label>
@@ -487,7 +476,6 @@ export default function Payroll() {
         </div>
       </div>
 
-      {/* Payroll Table */}
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
@@ -612,7 +600,6 @@ export default function Payroll() {
 
                       <td className="px-4 py-3.5 text-right">
                         <div className="flex items-center justify-end gap-1.5">
-                          {/* View Payslip */}
                           <button
                             onClick={() => {
                               setActivePayslip(row);
@@ -624,7 +611,6 @@ export default function Payroll() {
                             <EyeIcon className="h-4 w-4" />
                           </button>
 
-                          {/* Mark Paid (if not already paid) */}
                           {!isPaid && (
                             <button
                               onClick={() => {
@@ -641,7 +627,6 @@ export default function Payroll() {
                             </button>
                           )}
 
-                          {/* Edit */}
                           <button
                             onClick={() => {
                               setEditingPayroll(row);
@@ -657,7 +642,6 @@ export default function Payroll() {
                             <EditIcon className="h-4 w-4" />
                           </button>
 
-                          {/* Delete */}
                           <button
                             onClick={() => setDeletingId(row.id)}
                             title="Delete Record"
@@ -675,7 +659,6 @@ export default function Payroll() {
           </table>
         </div>
 
-        {/* Pagination Bar */}
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-slate-50/50 px-4 py-3 text-xs text-slate-500">
           <div>
             Showing{' '}
@@ -711,7 +694,6 @@ export default function Payroll() {
         </div>
       </div>
 
-      {/* --- MODAL: Generate Payroll --- */}
       {isGenerateModalOpen && (
         <div
           className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 p-4 backdrop-blur-sm !m-0"
@@ -812,7 +794,6 @@ export default function Payroll() {
         </div>
       )}
 
-      {/* --- MODAL: Bulk Disburse --- */}
       {isBulkPayModalOpen && (
         <div
           className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 p-4 backdrop-blur-sm !m-0"
@@ -884,7 +865,6 @@ export default function Payroll() {
         </div>
       )}
 
-      {/* --- MODAL: Single Mark Paid --- */}
       {markingPaidItem && (
         <div
           className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 p-4 backdrop-blur-sm !m-0"
@@ -953,7 +933,6 @@ export default function Payroll() {
         </div>
       )}
 
-      {/* --- MODAL: Edit Payroll --- */}
       {editingPayroll && (
         <div
           className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 p-4 backdrop-blur-sm !m-0"
@@ -1031,7 +1010,6 @@ export default function Payroll() {
         </div>
       )}
 
-      {/* --- CONFIRM DELETE MODAL --- */}
       {deletingId && (
         <div
           className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 p-4 backdrop-blur-sm !m-0"

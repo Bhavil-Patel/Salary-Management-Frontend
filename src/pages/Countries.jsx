@@ -152,7 +152,7 @@ export default function Countries() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => loadCountries(debouncedSearch)}
@@ -174,7 +174,7 @@ export default function Countries() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         <StatCard label="Total Countries" value={countries.length} />
         <StatCard
           label="Currencies"
@@ -183,8 +183,8 @@ export default function Countries() {
         <StatCard label="Database Table" value="countries" />
       </div>
 
-      <div className="rounded-lg border border-slate-200 bg-white p-4">
-        <div className="relative max-w-md">
+      <div className="rounded-lg border border-slate-200 bg-white p-3.5 sm:p-4 shadow-sm">
+        <div className="relative w-full sm:max-w-md">
           <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
@@ -206,7 +206,7 @@ export default function Countries() {
 
       <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
+          <table className="w-full min-w-[550px] text-left text-sm">
             <thead className="border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-600">
               <tr>
                 <th className="px-5 py-3.5">ID</th>
@@ -293,7 +293,7 @@ export default function Countries() {
 
       {isFormModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm !m-0">
-          <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white shadow-2xl">
+          <div className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-2xl">
             <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
               <h2 className="text-lg font-semibold text-slate-900">
                 {selectedCountry ? 'Edit Country' : 'Add Country'}

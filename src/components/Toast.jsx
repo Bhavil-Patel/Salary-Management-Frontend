@@ -31,7 +31,7 @@ export default function Toast({ toast, message, type = 'success', onClose }) {
   return (
     <div
       role="alert"
-      className={`fixed bottom-6 right-6 flex max-w-md items-center gap-2.5 rounded-lg border px-4 py-3 shadow-lg transition-all animate-in fade-in slide-in-from-bottom-2 z-[1000] ${config.container}`}
+      className={`fixed bottom-4 right-4 left-4 sm:left-auto sm:bottom-6 sm:right-6 flex max-w-md items-center gap-2.5 rounded-lg border px-4 py-3 shadow-lg transition-all animate-in fade-in slide-in-from-bottom-2 z-[1000] ${config.container}`}
     >
       {config.icon}
       <span className="text-sm font-medium">{activeToast.message}</span>
