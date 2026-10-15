@@ -10,3 +10,4 @@ export { default as UsersIcon } from './UsersIcon';
 export { default as CheckIcon } from './CheckIcon';
 export { default as InfoIcon } from './InfoIcon';
 export { default as CloseIcon } from './CloseIcon';
+export { default as Logo } from './Logo';
