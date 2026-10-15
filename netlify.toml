@@ -3,9 +3,10 @@
   publish = "build"
 
 [build.environment]
-  NODE_VERSION = "20"
+  NODE_VERSION = "22"
   CI = "false"
   DISABLE_ESLINT_PLUGIN = "true"
+  YARN_FLAGS = "--ignore-engines"
 
 [[redirects]]
   from = "/*"
