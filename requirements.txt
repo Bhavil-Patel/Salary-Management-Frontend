@@ -1,0 +1,242 @@
+================================================================================
+ENTERPRISE SALARY MANAGEMENT SYSTEM - FRONTEND REQUIREMENTS SPECIFICATION
+================================================================================
+Document Type: Frontend System Requirements Specification (.txt)
+Application: Salary Management System (Frontend Client)
+Target Framework: React 19 (SPA) with React Router v7 & Tailwind CSS v3
+Date of Specification: October 2026
+
+--------------------------------------------------------------------------------
+1. PROJECT OVERVIEW & OBJECTIVE
+--------------------------------------------------------------------------------
+The frontend client serves as an enterprise-grade Single Page Application (SPA)
+designed for human resource teams and payroll managers. It facilitates end-to-end
+monthly payroll computation, statutory deduction visibility, one-click bulk
+salary disbursement, salary revision audit history, employee records management,
+and client-side official salary slip PDF generation.
+
+--------------------------------------------------------------------------------
+2. TECHNICAL ENVIRONMENT & DEPENDENCY REQUIREMENTS
+--------------------------------------------------------------------------------
+2.1 Runtime & Package Management
+  - Node.js: v18.0.0 or higher (v20+ / v24+ recommended)
+  - Package Manager: npm (v9+) or Yarn (v1.22+)
+
+2.2 Core Framework & Libraries
+  - Framework: React v19.3.0 (Functional Components & React Hooks)
+  - DOM Rendering: ReactDOM v19.3.0
+  - Application Routing: React Router DOM v7.18.4
+  - Styling Engine: Tailwind CSS v3.x (PostCSS & Autoprefixer)
+  - HTTP / REST Client: Axios v1.20.0 (30-second default timeout)
+  - Client-Side PDF Generation: html2pdf.js v0.14.0 (Canvas 2x rendering, A4 portrait)
+
+2.3 Testing Environment
+  - Test Runner: Jest (integrated via react-scripts 5.0.1)
+  - Testing Utilities:
+    * @testing-library/react v16.3.3
+    * @testing-library/jest-dom v6.9.1
+    * @testing-library/user-event v13.5.0
+    * @testing-library/dom v10.4.2
+  - Polyfills: TextEncoder & TextDecoder polyfills in setupTests.js for JSDOM compatibility.
+
+--------------------------------------------------------------------------------
+3. ARCHITECTURAL & APPLICATION STRUCTURE REQUIREMENTS
+--------------------------------------------------------------------------------
+3.1 Application Shell & Navigation
+  - Header & Brand: Persistent responsive navigation bar with brand icon ("SM")
+    and title ("Salary Management").
+  - Navigation Links:
+    * Dashboard (/dashboard)
+    * Payroll (/payroll)
+    * Payslips (/payslips)
+    * Revisions (/salary-revisions)
+    * Employees (/employees)
+    * Departments (/departments)
+    * Jobs (/jobs)
+    * Countries (/countries)
+  - Routing Default: Root index route (/) must automatically redirect to (/dashboard).
+  - Active Route Indication: Visual highlight for the current active route.
+
+3.2 Global Layout & Feedback Components
+  - Layout Component (Layout.jsx): Shell containing header navigation and dynamic
+    <Outlet /> viewport with max-w-7xl auto-centering.
+  - Toast Notifications (Toast.jsx): Fixed-position floating notifications supporting:
+    * Success (Emerald container with check icon)
+    * Error (Rose container with warning icon)
+    * Warning (Amber container with caution icon)
+    * Info (Sky blue container with information icon)
+    * Dismissible close button (with accessible aria labels)
+  - Modal Background Scroll Locking (useBodyScrollLock.js):
+    * Disables body overflow ('hidden') whenever modals are active.
+    * Compensates for scrollbar width using right padding to eliminate layout shifts.
+    * Restores original body styling cleanly on modal dismissal.
+
+--------------------------------------------------------------------------------
+4. FUNCTIONAL MODULE REQUIREMENTS
+--------------------------------------------------------------------------------
+
+4.1 Dashboard View (/dashboard)
+  - Summary Metric Cards (StatCard.jsx):
+    * Total Employees count
+    * Total Monthly Payroll expenditure
+    * Disbursed Amount vs. Pending Amount
+    * Department & Job Designations count
+  - Real-time Insights:
+    * Average salary breakdown across departments
+    * Recent payroll processing activity stream
+    * Dual-endpoint fallback logic (/dashboard -> /employees/insights fallback)
+
+4.2 Monthly Payroll Processing View (/payroll)
+  - Batch Generation:
+    * Ability to trigger payroll generation for specified Month and Year.
+    * Option to filter batch by Department (or 'ALL' departments).
+    * Configurable percentage-based bonus parameter.
+  - Manual Payroll Entry:
+    * Create single custom payroll record with custom bonuses and deductions.
+  - Inline Adjustments:
+    * Edit bonus amount, unpaid leave / other deductions, and remarks per employee.
+  - Salary Disbursement Actions:
+    * Single Record: Mark employee payroll as PAID with disbursement date & payment
+      method (BANK_TRANSFER, UPI, CHEQUE, CASH).
+    * Bulk Disbursement: "Disburse All" action to mark all processed records of the
+      selected month as PAID in a single operation.
+  - Financial Summary Strip:
+    * Real-time calculation of Total Gross, Total Deductions, Total Net Payable,
+      Total Employees, Paid Count, and Processed Count.
+  - Search & Filtering Engine:
+    * Multi-filter toolbar (Month, Year, Department, Status: ALL / PROCESSED / PAID / DRAFT).
+    * Debounced (400ms) employee name and email search.
+    * Prominent "Clear Filters" button resetting all query states to defaults.
+
+4.3 Payslips & Direct PDF Download View (/payslips)
+  - Directory View:
+    * Visual card layout for all employee payslips with month/year filters.
+    * Shows Employee Name, Email, Department, Job Title, Net Salary, and Status Badge.
+  - Official Payslip Modal (PayslipModal.jsx):
+    * Company branding and document title ("SALARY SLIP").
+    * Unique Slip Reference Number (e.g., #PAY-000001).
+    * Employee details: ID, Full Name, Designation, Department, Email, Country.
+    * Itemized Earnings Table:
+      - Basic Salary (50% of Base CTC)
+      - House Rent Allowance / HRA (20% of Base CTC)
+      - Conveyance Allowance (5% of Base CTC)
+      - Medical Allowance (5% of Base CTC)
+      - Special Allowance (~20% balancing component)
+      - Performance / Festive Bonus
+      - Total Gross Salary
+    * Itemized Deductions Table:
+      - Provident Fund / PF (12% of Basic)
+      - Professional Tax / PT (Flat 200 if Gross > 15,000)
+      - TDS / Income Tax (Estimated slab-based withholding)
+      - Loss of Pay / Other Deductions
+      - Total Deductions
+    * Net Amount Payable highlighted in bold numerical format and written words
+      (e.g., "Ninety Two Thousand Eight Hundred Only").
+    * Authorized Signatory and Employee Signature blocks.
+  - Direct Client-Side PDF Generation:
+    * Single-click download via html2pdf.js without browser print prompt requirement.
+    * Auto-generated standardized filename:
+      `Salary_Slip_<Employee_Name>_<Month>_<Year>.pdf`
+    * High-resolution canvas rendering (scale: 2, A4 portrait).
+
+4.4 Salary Revisions & Appraisal Management (/salary-revisions)
+  - Revision Audit Log:
+    * Tabular audit log displaying Effective Date, Employee Name, Previous CTC,
+      New CTC, Increment Percentage, Appraisal Type, and Remarks.
+    * Searchable by employee name and revision remarks.
+  - Two-Way Revision Calculator:
+    * Live bidirectional calculation between Increment % (+X.XX%) and New Salary amount.
+  - Master CTC Synchronization:
+    * Saving a revision must immediately reflect in the Employee Master base salary.
+  - Revision Categories:
+    * Annual Appraisal, Promotion, Market Correction, Retention Adjustment.
+  - Deletion: Ability to delete historical revision records with confirmation.
+
+4.5 Employee Master Management (/employees)
+  - Employee Directory:
+    * Paginated listing (default 10 per page) with server-side pagination support.
+    * Search by full name and email with 400ms debouncing.
+    * Filtering by Department and Job Title dropdowns.
+  - Employee Profile Actions:
+    * Add Employee: Full Name, Email, Department ID, Job ID, Country ID, Base CTC Salary, Hire Date.
+    * Update Employee: Modify designation, department, country, or base salary.
+    * Delete Employee: Soft delete with confirmation dialog.
+  - Validation: Email syntax validation, mandatory numerical identifiers, required hire date.
+
+4.6 Department Master (/departments)
+  - View all active departments with employee count aggregations.
+  - Create, update name, and delete departments.
+  - Validation: Non-empty department name.
+
+4.7 Job Title Master (/jobs)
+  - View all job titles and designations.
+  - Create new job classifications, rename, and delete titles.
+  - Validation: Non-empty job title string.
+
+4.8 Country & Currency Master (/countries)
+  - Country code, full name, and standard currency code (INR, USD, EUR, GBP, CAD, etc.).
+  - Automatic uppercase normalization on country_code and currency_code inputs.
+  - Multi-currency display support dynamically formatted throughout payroll.
+
+--------------------------------------------------------------------------------
+5. UTILITY & CALCULATION LOGIC REQUIREMENTS
+--------------------------------------------------------------------------------
+5.1 Currency Formatting
+  - formatMoney(value, currency = 'INR'):
+    * Formats currency with 0 decimal places.
+    * INR currency uses 'en-IN' locale (₹ XX,XXX); other currencies use 'en-US'.
+    * Gracefully handles 0, null, undefined, and non-numeric strings.
+  - formatMoneyExact(value, currency = 'INR'):
+    * Formats currency with exactly 2 fractional digits (e.g., ₹ 50,000.00).
+
+5.2 Number-to-Words Conversion (numberToWords)
+  - Converts numbers into Indian numbering system English words:
+    * Units (One to Nine)
+    * Teens (Ten to Nineteen)
+    * Tens (Twenty to Ninety)
+    * Orders: Hundred, Thousand, Lakh, Crore
+  - Appends "Only" suffix.
+  - Edge cases: 0 returns "Zero", negative numbers handled via absolute value.
+
+5.3 Month Helper Functions
+  - MONTHS array containing 12 month items ({ value: 1-12, label: 'January'-'December' }).
+  - getMonthName(monthNum): Returns month name string or fallback "Month X".
+
+--------------------------------------------------------------------------------
+6. API CLIENT & INTEGRATION REQUIREMENTS
+--------------------------------------------------------------------------------
+6.1 Base Configuration (ApiConfig.js)
+  - Environment variable fallback:
+    process.env.REACT_APP_API_URL || "https://salary-management-backend-vcnr.onrender.com/api"
+  - Default headers: 'Content-Type': 'application/json'
+  - Timeout: 30000ms (30 seconds)
+
+6.2 Unified Error Handling (handleApiError)
+  - Response Error: Returns backend message or error code with HTTP status.
+  - Timeout Error (ECONNABORTED): "Request timed out. Please try again."
+  - Network Error (ERR_NETWORK): "Unable to connect to the server. Please check your connection."
+  - Validation Error: Preserves original validation error messages.
+
+--------------------------------------------------------------------------------
+7. NON-FUNCTIONAL REQUIREMENTS
+--------------------------------------------------------------------------------
+7.1 Performance & Responsiveness
+  - Fast page loading with zero unnecessary re-renders.
+  - Instant search filtering using 400ms debounce.
+  - Mobile, tablet, and wide desktop responsive breakpoints (sm, md, lg, xl).
+
+7.2 Accessibility & Usability (a11y)
+  - ARIA attributes: role="dialog", aria-modal="true", role="alert", aria-label on icon buttons.
+  - Keyboard accessibility with outline focus states (focus-visible:outline).
+  - Clear visual contrast compliant with WCAG 2.1 AA standards.
+
+7.3 Code Quality & Maintainability
+  - Modular component architecture with separation of concerns:
+    * /api: Pure HTTP client services
+    * /components: Reusable presentation elements
+    * /pages: View controllers and workflow screens
+    * /Utils: Pure helper functions and custom hooks
+  - Strict preservation of 100% passing automated test suite (npm test).
+================================================================================
+END OF SPECIFICATION
+================================================================================
