@@ -40,7 +40,3 @@ export const getDashboardInsights = async () => {
     }
   }
 };
-
-export default {
-  getDashboardInsights,
-};
