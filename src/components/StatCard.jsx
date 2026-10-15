@@ -1,8 +1,8 @@
 export default function StatCard({ label, value }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4">
+    <div className="rounded-lg border border-slate-200 bg-white p-2 sm:p-4">
       <p className="text-sm text-slate-500">{label}</p>
-      <p className="mt-1 text-2xl font-semibold tabular-nums">{value}</p>
+      <p className="mt-1 text-xl sm:text-2xl font-semibold tabular-nums">{value}</p>
     </div>
   );
 }

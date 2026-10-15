@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import Payroll from './Payroll';
 import { getPayrollList } from '../api/PayrollApis';
 import { getDepartments } from '../api/DepartmentApis';
@@ -71,4 +71,76 @@ describe('pages/Payroll', () => {
     expect(screen.getByRole('button', { name: /Generate Monthly Payroll/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Refresh/i })).toBeInTheDocument();
   });
+
+  test('updates page limit and fetches data with selected limit', async () => {
+    getPayrollList.mockResolvedValueOnce({
+      success: true,
+      data: mockPayrolls,
+      pagination: { totalRecords: 30, currentPage: 1, limit: 10, totalPages: 3 },
+      summary: {},
+    });
+    getPayrollList.mockResolvedValueOnce({
+      success: true,
+      data: mockPayrolls,
+      pagination: { totalRecords: 30, currentPage: 1, limit: 25, totalPages: 2 },
+      summary: {},
+    });
+    getDepartments.mockResolvedValue({ data: [] });
+
+    render(<Payroll />);
+
+    await waitFor(() => {
+      expect(getPayrollList).toHaveBeenCalledWith(
+        expect.objectContaining({ limit: 10, page: 1 })
+      );
+    });
+
+    const limitSelect = screen.getByTestId('payroll-page-limit-filter');
+    expect(limitSelect).toBeInTheDocument();
+    expect(limitSelect.value).toBe('10');
+
+    fireEvent.change(limitSelect, { target: { value: '25' } });
+
+    await waitFor(() => {
+      expect(getPayrollList).toHaveBeenCalledWith(
+        expect.objectContaining({ limit: 25, page: 1 })
+      );
+    });
+  });
+
+  test('updates page limit from bottom table footer dropdown', async () => {
+    getPayrollList.mockResolvedValueOnce({
+      success: true,
+      data: mockPayrolls,
+      pagination: { totalRecords: 50, currentPage: 1, limit: 10, totalPages: 5 },
+      summary: {},
+    });
+    getPayrollList.mockResolvedValueOnce({
+      success: true,
+      data: mockPayrolls,
+      pagination: { totalRecords: 50, currentPage: 1, limit: 50, totalPages: 1 },
+      summary: {},
+    });
+    getDepartments.mockResolvedValue({ data: [] });
+
+    render(<Payroll />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Diana Prince')).toBeInTheDocument();
+    });
+
+    const bottomLimitSelect = screen.getByTestId('payroll-page-limit-bottom');
+    expect(bottomLimitSelect).toBeInTheDocument();
+    expect(bottomLimitSelect.value).toBe('10');
+
+    fireEvent.change(bottomLimitSelect, { target: { value: '50' } });
+
+    await waitFor(() => {
+      expect(getPayrollList).toHaveBeenCalledWith(
+        expect.objectContaining({ limit: 50, page: 1 })
+      );
+    });
+  });
 });
+
+

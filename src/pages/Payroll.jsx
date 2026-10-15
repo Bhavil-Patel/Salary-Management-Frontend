@@ -161,9 +161,26 @@ export default function Payroll() {
           search: debouncedSearch,
         });
 
-        if (res?.success) {
-          setPayrollList(res.data);
-          setPagination(res.pagination);
+        if (res?.success || Array.isArray(res?.data)) {
+          setPayrollList(res.data || []);
+          if (res.pagination) {
+            setPagination((prev) => ({
+              ...prev,
+              ...res.pagination,
+              currentPage: Number(res.pagination.currentPage) || page,
+              limit: Number(res.pagination.limit) || pagination.limit,
+              totalPages:
+                Number(res.pagination.totalPages) ||
+                Math.ceil((Number(res.pagination.totalRecords) || res.data?.length || 0) / pagination.limit) ||
+                1,
+              totalRecords:
+                res.pagination.totalRecords !== undefined
+                  ? Number(res.pagination.totalRecords)
+                  : res.data?.length || 0,
+              hasNextPage: Boolean(res.pagination.hasNextPage),
+              hasPreviousPage: Boolean(res.pagination.hasPreviousPage),
+            }));
+          }
           if (res.summary) setSummary(res.summary);
         }
       } catch (err) {
@@ -175,6 +192,16 @@ export default function Payroll() {
     },
     [pagination.limit, selectedMonth, selectedYear, selectedStatus, selectedDept, debouncedSearch]
   );
+
+  const handleLimitChange = (eOrValue) => {
+    const val = typeof eOrValue === 'object' && eOrValue?.target ? eOrValue.target.value : eOrValue;
+    const newLimit = Number(val) || 10;
+    setPagination((prev) => ({
+      ...prev,
+      limit: newLimit,
+      currentPage: 1,
+    }));
+  };
 
   useEffect(() => {
     fetchPayroll(1);
@@ -362,7 +389,7 @@ export default function Payroll() {
       </div>
 
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 rounded-xl border border-slate-200 bg-white p-3.5 sm:p-4 shadow-sm">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 w-full lg:w-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3 w-full lg:w-auto">
           <div>
             <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1">
               Month
@@ -431,6 +458,26 @@ export default function Payroll() {
             </select>
           </div>
 
+          <div>
+            <label htmlFor="payroll-page-limit-filter" className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1">
+              Per Page
+            </label>
+            <select
+              id="payroll-page-limit-filter"
+              data-testid="payroll-page-limit-filter"
+              aria-label="Select page limit"
+              value={pagination.limit}
+              onChange={handleLimitChange}
+              className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-800 shadow-sm focus:border-accent-500 focus:outline-none focus:ring-1 focus:ring-accent-500"
+            >
+              <option value="5">5 / page</option>
+              <option value="10">10 / page</option>
+              <option value="25">25 / page</option>
+              <option value="50">50 / page</option>
+              <option value="100">100 / page</option>
+            </select>
+          </div>
+
           {isFilterActive && (
             <div className="self-end pb-0.5">
               <button
@@ -493,7 +540,7 @@ export default function Payroll() {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
-                [...Array(6)].map((_, i) => (
+                [...Array(Math.min(pagination.limit || 6, 10))].map((_, i) => (
                   <tr key={i} className="animate-pulse">
                     <td className="px-4 py-3.5"><div className="h-4 w-32 rounded bg-slate-200" /></td>
                     <td className="px-4 py-3.5"><div className="h-4 w-28 rounded bg-slate-200" /></td>
@@ -660,16 +707,38 @@ export default function Payroll() {
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-slate-50/50 px-4 py-3 text-xs text-slate-500">
-          <div>
-            Showing{' '}
-            <span className="font-semibold text-slate-800">
-              {payrollList.length > 0 ? (pagination.currentPage - 1) * pagination.limit + 1 : 0}
-            </span>{' '}
-            to{' '}
-            <span className="font-semibold text-slate-800">
-              {Math.min(pagination.currentPage * pagination.limit, pagination.totalRecords)}
-            </span>{' '}
-            of <span className="font-semibold text-slate-800">{pagination.totalRecords}</span> entries
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+            <div>
+              Showing{' '}
+              <span className="font-semibold text-slate-800">
+                {payrollList.length > 0 ? (pagination.currentPage - 1) * pagination.limit + 1 : 0}
+              </span>{' '}
+              to{' '}
+              <span className="font-semibold text-slate-800">
+                {Math.min(pagination.currentPage * pagination.limit, pagination.totalRecords)}
+              </span>{' '}
+              of <span className="font-semibold text-slate-800">{pagination.totalRecords}</span> entries
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <label htmlFor="payroll-page-limit-bottom" className="font-medium text-slate-500">
+                Rows:
+              </label>
+              <select
+                id="payroll-page-limit-bottom"
+                data-testid="payroll-page-limit-bottom"
+                aria-label="Rows per page"
+                value={pagination.limit}
+                onChange={handleLimitChange}
+                className="rounded border border-slate-300 bg-white px-2 py-1 text-xs font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 focus:border-accent-500 focus:outline-none focus:ring-1 focus:ring-accent-500"
+              >
+                <option value="5">5 / page</option>
+                <option value="10">10 / page</option>
+                <option value="25">25 / page</option>
+                <option value="50">50 / page</option>
+                <option value="100">100 / page</option>
+              </select>
+            </div>
           </div>
 
           <div className="flex items-center gap-1.5">

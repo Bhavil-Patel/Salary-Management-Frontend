@@ -32,12 +32,12 @@ export default function Layout() {
     <div className="min-h-screen bg-slate-50/50">
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 sm:px-6">
-          <div className="flex items-center gap-3">
-            <Logo className="h-8 w-8 shrink-0" />
-            <div>
-              <span className="text-sm font-bold tracking-tight text-slate-900">Salary Management</span>
+          <NavLink to="/dashboard" className="min-w-0">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+              <Logo className="h-7 w-7 sm:h-8 sm:w-8 shrink-0" />
+              <span className="min-w-0 truncate font-bold tracking-tight text-slate-700 text-base sm:text-lg md:text-xl">Salary Management</span>
             </div>
-          </div>
+          </NavLink>
 
           <nav className="hidden md:flex items-center gap-1" aria-label="Main Navigation">
             {navLinks.map((link) => (
