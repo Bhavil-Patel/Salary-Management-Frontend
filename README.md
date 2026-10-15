@@ -13,6 +13,7 @@ A modern, full-stack enterprise web application designed for automated payroll g
 
 ## Table of Contents
 
+- [Engineering Artifacts & Architecture Documentation](#engineering-artifacts--architecture-documentation)
 - [Key Features](#key-features)
 - [Salary Computation & Statutory Deductions](#salary-computation--statutory-deductions)
 - [Application Architecture](#application-architecture)
@@ -25,6 +26,21 @@ A modern, full-stack enterprise web application designed for automated payroll g
   - [Environment Variables](#environment-variables)
 - [API Endpoints Reference](#api-endpoints-reference)
 - [UI & UX Highlights](#ui--ux-highlights)
+
+---
+
+## Engineering Artifacts & Architecture Documentation
+
+For in-depth architectural analysis, product framing, and technical decision records designed for an organization with 10,000 employees, refer to the dedicated **[artifacts/](./artifacts/README.md)** directory:
+
+| Document | Description |
+| :--- | :--- |
+| **[Requirements Specification](./FRONTEND_REQUIREMENTS.txt)** | Official Frontend Software Requirements Specification (SRS) |
+| **[Planning & Design Notes](./artifacts/PLANNING_AND_DESIGN_NOTES.md)** | Product framing, HR Manager persona, user journeys, statutory breakdown logic, design system, and deliberate exclusions |
+| **[Architecture Diagrams](./artifacts/ARCHITECTURE_DIAGRAMS.md)** | Mermaid diagrams of high-level architecture, React Router v7 layout, payroll batch flow, client-side PDF pipeline, and debounced search |
+| **[AI Prompts & Instructions](./artifacts/AI_PROMPTS_AND_INSTRUCTIONS.md)** | Intentional agentic AI engineering log, prompt sets, human-in-the-loop review, and course corrections |
+| **[Trade-off Explanations](./artifacts/TRADE_OFF_EXPLANATIONS.md)** | Comprehensive trade-off evaluations (SPA vs. SSR, client PDF vs. server Puppeteer, server pagination vs. 10k virtualization, Tailwind vs. component libraries) |
+| **[Performance Considerations](./artifacts/PERFORMANCE_CONSIDERATIONS.md)** | Optimizing for 10,000 employees: network payload (< 15KB), 400ms search debouncing, CLS = 0 layout shift prevention, and canvas memory tuning |
 
 ---
 
