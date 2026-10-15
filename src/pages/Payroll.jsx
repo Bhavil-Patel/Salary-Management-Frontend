@@ -390,7 +390,7 @@ export default function Payroll() {
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between align-top gap-4 rounded-xl border border-slate-200 bg-white p-3.5 sm:p-4 shadow-sm">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between !items-start gap-4 rounded-xl border border-slate-200 bg-white p-3.5 sm:p-4 shadow-sm">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3 w-full lg:w-auto">
           <div>
             <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1">
