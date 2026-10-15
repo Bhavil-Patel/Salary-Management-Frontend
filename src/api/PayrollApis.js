@@ -10,10 +10,12 @@ const handleApiError = (error, defaultMessage) => {
       `Request failed with status ${error.response.status}`;
   } else if (error.code === 'ECONNABORTED') {
     message = 'Request timed out. Please try again.';
-  } else if (error.code === 'ERR_NETWORK' || !error.response) {
+  } else if (error.code === 'ERR_NETWORK') {
     message = 'Unable to connect to the server. Please check your connection.';
   } else if (error.message) {
     message = error.message;
+  } else if (!error.response) {
+    message = 'Unable to connect to the server. Please check your connection.';
   }
 
   console.error(defaultMessage, error);
