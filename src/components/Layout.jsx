@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom';
+import { Logo } from '../Assets/icons';
 
 const linkClass = ({ isActive }) =>
   `rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-150 focus-visible:outline-2 focus-visible:outline-accent-500 ${isActive
@@ -12,7 +13,7 @@ export default function Layout() {
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 sm:px-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-600 font-bold text-white shadow-sm text-sm">SM</div>
+            <Logo className="h-8 w-8" />
             <div>
               <span className="text-sm font-bold tracking-tight text-slate-900">Salary Management</span>
             </div>
