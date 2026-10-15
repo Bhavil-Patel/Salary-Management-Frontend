@@ -1,7 +1,23 @@
+import { useEffect, useRef } from 'react';
 import { CheckIcon, WarningIcon, WarningCircleIcon, InfoIcon } from '../Assets/icons';
 
-export default function Toast({ toast, message, type = 'success', onClose }) {
+export default function Toast({ toast, message, type = 'success', onClose, duration = 3000 }) {
   const activeToast = toast || (message ? { message, type } : null);
+
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
+
+  useEffect(() => {
+    if (!activeToast?.message || !duration) return;
+
+    const timer = setTimeout(() => {
+      onCloseRef.current?.();
+    }, duration);
+
+    return () => clearTimeout(timer);
+  }, [activeToast?.message, activeToast?.type, activeToast?.id, duration]);
 
   if (!activeToast || !activeToast.message) return null;
 
@@ -31,7 +47,7 @@ export default function Toast({ toast, message, type = 'success', onClose }) {
   return (
     <div
       role="alert"
-      className={`fixed bottom-4 right-4 left-4 sm:left-auto sm:bottom-6 sm:right-6 flex max-w-md items-center gap-2.5 rounded-lg border px-4 py-3 shadow-lg transition-all animate-in fade-in slide-in-from-bottom-2 z-[1000] ${config.container}`}
+      className={`fixed top-4 right-4 left-4 sm:left-auto sm:top-6 sm:right-6 flex max-w-md items-center gap-2.5 rounded-lg border px-4 py-3 shadow-lg transition-all animate-in fade-in slide-in-from-top-2 z-[1000] ${config.container}`}
     >
       {config.icon}
       <span className="text-sm font-medium">{activeToast.message}</span>

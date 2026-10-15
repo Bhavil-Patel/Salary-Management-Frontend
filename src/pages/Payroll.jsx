@@ -104,7 +104,7 @@ export default function Payroll() {
   );
 
   const showToast = (message, type = 'success') => {
-    setToast({ message, type });
+    setToast({ message, type, id: Date.now() });
   };
 
   // Debounce search
@@ -301,8 +301,10 @@ export default function Payroll() {
     <div className="space-y-6">
       {toast && (
         <Toast
+          key={toast.id || `${toast.message}-${toast.type}`}
           message={toast.message}
           type={toast.type}
+          duration={3000}
           onClose={() => setToast(null)}
         />
       )}

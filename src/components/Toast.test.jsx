@@ -48,4 +48,39 @@ describe('components/Toast', () => {
     render(<Toast message="Non-dismissable toast" />);
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
+
+  test('renders at top side of screen', () => {
+    render(<Toast message="Top toast" />);
+    const alert = screen.getByRole('alert');
+    expect(alert).toHaveClass('top-4');
+    expect(alert).toHaveClass('sm:top-6');
+  });
+
+  test('auto-dismisses after 3 seconds by calling onClose', () => {
+    jest.useFakeTimers();
+    const handleClose = jest.fn();
+    render(<Toast message="Auto-dismiss toast" onClose={handleClose} duration={3000} />);
+
+    expect(handleClose).not.toHaveBeenCalled();
+
+    jest.advanceTimersByTime(2999);
+    expect(handleClose).not.toHaveBeenCalled();
+
+    jest.advanceTimersByTime(1);
+    expect(handleClose).toHaveBeenCalledTimes(1);
+
+    jest.useRealTimers();
+  });
+
+  test('does not auto-dismiss when duration is 0', () => {
+    jest.useFakeTimers();
+    const handleClose = jest.fn();
+    render(<Toast message="Sticky toast" onClose={handleClose} duration={0} />);
+
+    jest.advanceTimersByTime(5000);
+    expect(handleClose).not.toHaveBeenCalled();
+
+    jest.useRealTimers();
+  });
 });
+
