@@ -1,0 +1,6 @@
+**/*.test.js
+**/*.test.jsx
+**/*.spec.js
+**/*.spec.jsx
+build/
+node_modules/
